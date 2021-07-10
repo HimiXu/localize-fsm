@@ -15,5 +15,5 @@ Source code can be viewed under
 To run the tests:
 
 ```
-    npm test
+    npm install && npm test
 ```
