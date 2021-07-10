@@ -20,7 +20,7 @@ export abstract class State {
     }
     // The state can register handlers to specific events:
     // a handler is a function that recieves an event (detected by string) and returns something
-    public readonly handlers: { [eventName: string]: EventHandler } = {};
+    private readonly handlers: { [eventName: string]: EventHandler } = {};
     constructor(handlers: { [eventName: string]: EventHandler }) {
         this.handlers = handlers;
     }
@@ -33,8 +33,8 @@ export abstract class State {
 }
 
 export class Machine {
-    public readonly states: { [stateName: string]: State };
-    public readonly transitions: {
+    private readonly states: { [stateName: string]: State };
+    private readonly transitions: {
         [stateName: string]: { [eventName: string]: string };
     } = {};
     private _currentStateName: string;
@@ -119,11 +119,11 @@ export const reloadState = async (fsm: Machine, path: string) => {
 
 // Builder of Machine for better readability
 export class MachineBuilder {
-    public _states: State[] = [];
-    public readonly transitions: {
+    private _states: State[] = [];
+    private transitions: {
         [stateName: string]: { [eventName: string]: string };
     } = {};
-    public _initialStateName: string = "";
+    private _initialStateName: string = "";
     states(states: State[]): MachineBuilder {
         this._states = states;
         return this;
