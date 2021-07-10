@@ -39,7 +39,7 @@ export class Machine {
     } = {};
     private _currentStateName: string;
 
-    // fsm constructor recieves all the states and the initial state
+    // fsm constructor recieves all the states, transitions and the initial state
     constructor(
         states: State[],
         transitions: {
@@ -47,7 +47,7 @@ export class Machine {
         },
         initialStateName: string
     ) {
-        // initial state must be in states
+        // array to map(name -> state)
         this.states = states.reduce(
             (obj: { [stateName: string]: State }, state: State) => {
                 obj[state.name] = state;
@@ -60,6 +60,7 @@ export class Machine {
         Object.entries(transitions).forEach(([stateName, transitions]) => {
             Object.entries(transitions).forEach(
                 ([eventName, nextStateName]) => {
+                    // validate that the states names are valid (of state in the states array)
                     if (!(stateName in this.states))
                         throw new Error(`${stateName} is not a valid state`);
                     if (!(nextStateName in this.states))
@@ -106,17 +107,17 @@ export class Machine {
     }
 }
 
+// persistence capability
 export const saveState = async (fsm: Machine, path: string) => {
     const state: string = fsm.currentStateName;
     await promises.writeFile(path, state);
 };
-
 export const reloadState = async (fsm: Machine, path: string) => {
     const state: string = (await promises.readFile(path)).toString();
     fsm.currentStateName = state;
 };
 
-// Builder for better readability
+// Builder of Machine for better readability
 export class MachineBuilder {
     public _states: State[] = [];
     public readonly transitions: {
